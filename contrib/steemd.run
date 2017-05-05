@@ -37,7 +37,8 @@ if [[ ! -z "$STEEMD_WITNESS_NAME" ]]; then
 fi
 
 if [[ ! -z "$STEEMD_MINER_NAME" ]]; then
-    ARGS+=" --miner=[\"$STEEMD_MINER_NAME\",\"$STEEMD_PRIVATE_KEY\"]"
+    # BUG: The --miner argument appears to no longer be supported?
+    #ARGS+=" --miner=[\"$STEEMD_MINER_NAME\",\"$STEEMD_PRIVATE_KEY\"]"
     ARGS+=" --mining-threads=$(nproc)"
 fi
 
@@ -45,11 +46,17 @@ if [[ ! -z "$STEEMD_PRIVATE_KEY" ]]; then
     ARGS+=" --private-key=$STEEMD_PRIVATE_KEY"
 fi
 
-# overwrite local config with image one
-if [[ "$USE_FULL_WEB_NODE" ]]; then
-  cp /etc/steemd/fullnode.config.ini $HOME/config.ini
-else
-  cp /etc/steemd/config.ini $HOME/config.ini
+if [[ ! -e $HOME/config.ini ]]; then
+    # overwrite local config with image one
+    if [[ "$USE_FULL_WEB_NODE" ]]; then
+      cp /etc/steemd/fullnode.config.ini $HOME/config.ini
+    else
+      cp /etc/steemd/config.ini $HOME/config.ini
+    fi
+fi
+
+if [[ ! -z "$STEEMD_MINER_NAME" ]]; then
+    echo "miner = [\"$STEEMD_MINER_NAME\",\"$STEEMD_PRIVATE_KEY\"]" >> $HOME/config.ini
 fi
 
 chown steemd:steemd $HOME/config.ini

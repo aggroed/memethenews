@@ -44,45 +44,6 @@ RUN \
     mkdir build && \
     cd build && \
     cmake \
-        -DCMAKE_BUILD_TYPE=Release \
-        -DBUILD_STEEM_TESTNET=ON \
-        -DLOW_MEMORY_NODE=OFF \
-        -DCLEAR_VOTES=ON \
-        .. && \
-    make -j$(nproc) chain_test && \
-    ./tests/chain_test && \
-    cd /usr/local/src/steem && \
-    doxygen && \
-    programs/build_helpers/check_reflect.py && \
-    programs/build_helpers/get_config_check.sh && \
-    rm -rf /usr/local/src/steem/build
-
-RUN \
-    cd /usr/local/src/steem && \
-    git submodule update --init --recursive && \
-    mkdir build && \
-    cd build && \
-    cmake \
-        -DCMAKE_BUILD_TYPE=Debug \
-        -DENABLE_COVERAGE_TESTING=ON \
-        -DBUILD_STEEM_TESTNET=ON \
-        -DLOW_MEMORY_NODE=OFF \
-        -DCLEAR_VOTES=ON \
-        -DCHAINBASE_CHECK_LOCKING=OFF \
-        .. && \
-    make -j$(nproc) chain_test && \
-    ./tests/chain_test && \
-    mkdir -p /var/cobertura && \
-    gcovr --object-directory="../" --root=../ --xml-pretty --gcov-exclude=".*tests.*" --gcov-exclude=".*fc.*" --gcov-exclude=".*app*" --gcov-exclude=".*net*" --gcov-exclude=".*plugins*" --gcov-exclude=".*schema*" --gcov-exclude=".*time*" --gcov-exclude=".*utilities*" --gcov-exclude=".*wallet*" --gcov-exclude=".*programs*" --output="/var/cobertura/coverage.xml" && \
-    cd /usr/local/src/steem && \
-    rm -rf /usr/local/src/steem/build
-
-RUN \
-    cd /usr/local/src/steem && \
-    git submodule update --init --recursive && \
-    mkdir build && \
-    cd build && \
-    cmake \
         -DCMAKE_INSTALL_PREFIX=/usr/local/steemd-default \
         -DCMAKE_BUILD_TYPE=Release \
         -DLOW_MEMORY_NODE=ON \
@@ -90,7 +51,7 @@ RUN \
         -DBUILD_STEEM_TESTNET=OFF \
         .. \
     && \
-    make -j$(nproc) && \
+    make && \
     make install && \
     cd .. && \
     ( /usr/local/steemd-default/bin/steemd --version \
@@ -111,7 +72,7 @@ RUN \
         -DBUILD_STEEM_TESTNET=OFF \
         .. \
     && \
-    make -j$(nproc) && \
+    make && \
     make install && \
     rm -rf /usr/local/src/steem
 

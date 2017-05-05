@@ -2524,6 +2524,12 @@ void database::init_genesis( uint64_t init_supply )
       {
          wso.current_shuffled_witnesses[0] = STEEMIT_INIT_MINER_NAME;
       } );
+
+      create< account_object >( [&]( account_object& a )
+      {
+         a.name = STEEMIT_PREMINE_RECIPIENT;
+         a.balance = asset( STEEMIT_PREMINE_AMOUNT, STEEM_SYMBOL );
+      } );
    }
    FC_CAPTURE_AND_RETHROW()
 }
